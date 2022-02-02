@@ -1,10 +1,11 @@
-import express from 'express';
+import express, { Request, Response, NextFunction } from 'express';
 import { currentUserRouter } from './routes/current-user';
 import { signupRouter } from './routes/signup';
 import { signoutRouter } from './routes/signout';
 import { signinRouter } from './routes/signin';
 import { errorHandler } from './middlewares/error-handler';
 import { NotFoundError } from './errors/not-found-error';
+import { catchAsync } from './middlewares/catch-async';
 
 const app = express();
 
@@ -18,9 +19,12 @@ app.use(signupRouter);
 app.use(signinRouter);
 app.use(signoutRouter);
 
-app.all('*', async (req, res, next) => {
-  next(new NotFoundError());
-});
+app.all(
+  '*',
+  catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    throw new NotFoundError();
+  })
+);
 
 //* Error handler
 app.use(errorHandler);
