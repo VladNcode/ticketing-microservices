@@ -1,7 +1,11 @@
-import { Response, Request, NextFunction } from 'express';
+import { Handler, NextFunction, Response, Request } from 'express';
 
-export const catchAsync = (func: any) => {
-  return (req: Request, res: Response, next: NextFunction) => {
-    func(req, res, next).catch(next);
+export const catchAsync =
+  (func: Handler): Handler =>
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      await func(req, res, next);
+    } catch (error) {
+      next(error);
+    }
   };
-};
