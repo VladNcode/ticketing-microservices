@@ -7,8 +7,8 @@ import { signupRouter } from './routes/signup';
 import { signoutRouter } from './routes/signout';
 import { signinRouter } from './routes/signin';
 
-import { errorHandler } from './middlewares/error-handler';
-import { NotFoundError } from './errors/not-found-error';
+import { errorHandler } from '@vnctickets/common';
+import { NotFoundError } from '@vnctickets/common';
 
 const app = express();
 app.set('trust proxy', true);
