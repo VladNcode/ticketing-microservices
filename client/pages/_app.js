@@ -1,11 +1,12 @@
 import 'bootstrap/dist/css/bootstrap.css';
 import buildClient from '../api/build-client';
+import Header from '../components/header';
 
 const AppComponent = ({ Component, pageProps, currentUser }) => {
   return (
     <div>
-      <h1>Header! {currentUser ? currentUser.email : 'No currentUser'}</h1>
-      <Component {...pageProps} />;
+      <Header currentUser={currentUser} />
+      <Component {...pageProps} />
     </div>
   );
 };
@@ -19,7 +20,10 @@ AppComponent.getInitialProps = async appContext => {
     pageProps = await appContext.Component.getInitialProps(appContext.ctx);
   }
 
-  return { pageProps, currentUser: data.currentUser };
+  return {
+    pageProps,
+    ...data,
+  };
 };
 
 export default AppComponent;
