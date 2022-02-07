@@ -5,6 +5,7 @@ import cookieSession from 'cookie-session';
 import { createTickerRouter } from './routes/new';
 import { showTicketRouter } from './routes/show';
 import { indexTicketRouter } from './routes/index';
+import { updateTickerRouter } from './routes/update';
 
 import { errorHandler, NotFoundError, currentUser } from '@vnctickets/common';
 
@@ -30,6 +31,7 @@ app.use(currentUser);
 app.use(createTickerRouter);
 app.use(showTicketRouter);
 app.use(indexTicketRouter);
+app.use(updateTickerRouter);
 
 app.all('*', (req, res, next) => {
   throw new NotFoundError();
