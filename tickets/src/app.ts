@@ -3,6 +3,8 @@ import 'express-async-errors';
 import cookieSession from 'cookie-session';
 
 import { createTickerRouter } from './routes/new';
+import { showTicketRouter } from './routes/show';
+import { indexTicketRouter } from './routes/index';
 
 import { errorHandler, NotFoundError, currentUser } from '@vnctickets/common';
 
@@ -26,6 +28,8 @@ app.use(currentUser);
 
 //* Routing
 app.use(createTickerRouter);
+app.use(showTicketRouter);
+app.use(indexTicketRouter);
 
 app.all('*', (req, res, next) => {
   throw new NotFoundError();
