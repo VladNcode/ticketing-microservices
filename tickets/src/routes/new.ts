@@ -42,4 +42,4 @@ router.post(
   }
 );
 
-export { router as createTickerRouter };
+export { router as createTicketRouter };

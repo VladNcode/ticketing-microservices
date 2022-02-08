@@ -49,4 +49,4 @@ router.put(
   }
 );
 
-export { router as updateTickerRouter };
+export { router as updateTicketRouter };

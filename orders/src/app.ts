@@ -2,10 +2,10 @@ import express from 'express';
 import 'express-async-errors';
 import cookieSession from 'cookie-session';
 
-import { createTicketRouter } from './routes/new';
-import { showTicketRouter } from './routes/show';
-import { indexTicketRouter } from './routes/index';
-import { updateTicketRouter } from './routes/update';
+import { createOrderRouter } from './routes/new';
+import { deleteOrderRouter } from './routes/delete';
+import { showOrderRouter } from './routes/show';
+import { indexOrderRouter } from './routes/index';
 
 import { errorHandler, NotFoundError, currentUser } from '@vnctickets/common';
 
@@ -28,10 +28,10 @@ app.use(
 app.use(currentUser);
 
 //* Routing
-app.use(createTicketRouter);
-app.use(showTicketRouter);
-app.use(indexTicketRouter);
-app.use(updateTicketRouter);
+app.use(createOrderRouter);
+app.use(showOrderRouter);
+app.use(indexOrderRouter);
+app.use(deleteOrderRouter);
 
 app.all('*', (req, res, next) => {
   throw new NotFoundError();
