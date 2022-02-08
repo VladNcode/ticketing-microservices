@@ -3,6 +3,9 @@ import { body } from 'express-validator';
 import { requireAuth, validateRequest, NotFoundError, NotAuthError } from '@vnctickets/common';
 import { Ticket } from '../models/ticket';
 
+import { TicketUpdatedPublisher } from '../events/publishers/ticket-updated-publisher';
+import { natsWrapper } from '../nats-wrapper';
+
 const router = express.Router();
 
 router.put(
@@ -34,6 +37,13 @@ router.put(
       { title, price },
       { new: true }
     );
+
+    new TicketUpdatedPublisher(natsWrapper.client).publish({
+      id: updatedTicket!.id,
+      title: updatedTicket!.title,
+      price: updatedTicket!.price,
+      userId: updatedTicket!.userId,
+    });
 
     res.status(200).send(updatedTicket);
   }
