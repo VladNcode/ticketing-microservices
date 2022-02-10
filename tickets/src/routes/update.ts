@@ -32,20 +32,21 @@ router.put(
 
     const { title, price } = req.body;
 
-    const updatedTicket = await Ticket.findByIdAndUpdate(
-      req.params.id,
-      { title, price },
-      { new: true }
-    );
+    ticket.set({
+      title,
+      price,
+    });
+    await ticket.save();
 
     new TicketUpdatedPublisher(natsWrapper.client).publish({
-      id: updatedTicket!.id,
-      title: updatedTicket!.title,
-      price: updatedTicket!.price,
-      userId: updatedTicket!.userId,
+      id: ticket.id,
+      title: ticket.title,
+      price: ticket.price,
+      userId: ticket.userId,
+      version: ticket.version,
     });
 
-    res.status(200).send(updatedTicket);
+    res.status(200).send(ticket);
   }
 );
 
