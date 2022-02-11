@@ -3,6 +3,7 @@ import request from 'supertest';
 import { OrderStatus } from '@vnctickets/common';
 import { app } from '../../app';
 import { Order } from '../../models/order';
+import { Payment } from '../../models/payment';
 import { stripe } from '../../stripe';
 
 it('returns a 404 when purchasing an order that does not exist', async () => {
@@ -60,14 +61,46 @@ it('returns a 400 when purchasing a cancelled order', async () => {
     .expect(400);
 });
 
-it('returns 201 with valid inputs', async () => {
+// it('returns 201 with valid inputs', async () => {
+//   const userId = new mongoose.Types.ObjectId().toHexString();
+
+//   const order = Order.build({
+//     id: new mongoose.Types.ObjectId().toHexString(),
+//     version: 0,
+//     userId: userId,
+//     price: 20,
+//     status: OrderStatus.Created,
+//   });
+
+//   await order.save();
+
+//   await request(app)
+//     .post('/api/payments')
+//     .set('Cookie', global.signup(userId))
+//     .send({
+//       token: 'tok_visa',
+//       orderId: order.id,
+//     })
+//     .expect(201);
+
+//   // Stripe mock
+// const chargeOptions = (stripe.charges.create as jest.Mock).mock.calls[0][0];
+// expect(chargeOptions.source).toEqual('tok_visa');
+// expect(chargeOptions.amount).toEqual(20 * 100);
+// expect(chargeOptions.currency).toEqual('usd');
+// });
+
+it('returns 201 with valid inputs with real stripe API', async () => {
+  process.env.STRIPE_KEY =
+    'sk_test_51KRxt0B5OdVnxsHxxKpMyAqCT0l0bmUnWOcT4ywaTdPsa9okqtuMLfBIuz0fYQXXGhK18bX0wLRfbRQ22SquXtGL00tHH1srQ4';
   const userId = new mongoose.Types.ObjectId().toHexString();
+  const price = Math.floor(Math.random() * 100000);
 
   const order = Order.build({
     id: new mongoose.Types.ObjectId().toHexString(),
     version: 0,
     userId: userId,
-    price: 20,
+    price,
     status: OrderStatus.Created,
   });
 
@@ -82,9 +115,18 @@ it('returns 201 with valid inputs', async () => {
     })
     .expect(201);
 
-  const chargeOptions = (stripe.charges.create as jest.Mock).mock.calls[0][0];
+  // const list = await stripe.charges.list();
+  // expect(list.data[0].amount).toEqual(price * 100);
 
-  expect(chargeOptions.source).toEqual('tok_visa');
-  expect(chargeOptions.amount).toEqual(20 * 100);
-  expect(chargeOptions.currency).toEqual('usd');
+  const list = await stripe.charges.list({ limit: 50 });
+  const stripeCharge = list.data.find(charge => charge.amount === price * 100);
+
+  expect(stripeCharge).toBeDefined();
+
+  const payment = await Payment.findOne({
+    orderId: order.id,
+    stripeId: stripeCharge!.id,
+  });
+
+  expect(payment).not.toBeNull();
 });

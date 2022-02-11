@@ -9,7 +9,10 @@ import {
   NotAuthError,
 } from '@vnctickets/common';
 import { Order } from '../models/order';
+import { Payment } from '../models/payment';
+import { PaymentCreatedPublisher } from '../events/publishers/payment-created-publisher';
 import { stripe } from '../stripe';
+import { natsWrapper } from '../nats-wrapper';
 
 const router = express.Router();
 
@@ -38,15 +41,26 @@ router.post(
       throw new BadRequestError('Cannot pay for cancelled order!');
     }
 
-    await stripe.charges.create({
+    const charge = await stripe.charges.create({
       currency: 'usd',
       amount: order.price * 100,
       source: token,
     });
 
-    res.status(201).send({
-      success: true,
+    const payment = Payment.build({
+      orderId,
+      stripeId: charge.id,
     });
+
+    await payment.save();
+
+    new PaymentCreatedPublisher(natsWrapper.client).publish({
+      id: payment.id,
+      orderId: payment.orderId,
+      stripeId: payment.stripeId,
+    });
+
+    res.status(201).send({ id: payment.id });
   }
 );
 

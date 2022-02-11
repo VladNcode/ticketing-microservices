@@ -1,15 +1,16 @@
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import mongoose from 'mongoose';
 import jwt from 'jsonwebtoken';
-import request from 'supertest';
-import { app } from '../app';
 
 declare global {
   var signup: (id?: string) => string[];
 }
 
 jest.mock('../nats-wrapper');
-jest.mock('../stripe');
+// jest.mock('../stripe');
+
+//TODO
+process.env.STRIPE_KEY = 'STIPE_API_KEY_NEEDS_TO_BE_HERE';
 
 let mongo: any;
 
