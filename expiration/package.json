@@ -19,7 +19,7 @@
   "license": "ISC",
   "dependencies": {
     "@types/bull": "^3.15.7",
-    "@vnctickets/common": "^1.0.14",
+    "@vnctickets/common": "^1.0.15",
     "bull": "^4.5.1",
     "node-nats-streaming": "^0.3.2",
     "ts-node-dev": "^1.1.8",
