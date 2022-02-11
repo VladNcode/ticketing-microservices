@@ -5,7 +5,7 @@ import request from 'supertest';
 import { app } from '../app';
 
 declare global {
-  var signup: () => string[];
+  var signup: (id?: string) => string[];
 }
 
 jest.mock('../nats-wrapper');
@@ -34,9 +34,12 @@ afterAll(async () => {
   await mongoose.connection.close();
 });
 
-global.signup = () => {
+global.signup = (id?: string) => {
   // Build a JWT payload: {id, email}
-  const payload = { id: new mongoose.Types.ObjectId().toHexString(), email: 'test@test.com' };
+  const payload = {
+    id: id || new mongoose.Types.ObjectId().toHexString(),
+    email: 'test@test.com',
+  };
 
   // Create JWT
   const token = jwt.sign(payload, process.env.JWT_KEY!);
