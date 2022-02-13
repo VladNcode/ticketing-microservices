@@ -10,7 +10,7 @@ jest.mock('../nats-wrapper');
 // jest.mock('../stripe');
 
 //TODO
-process.env.STRIPE_KEY = 'STIPE_API_KEY_NEEDS_TO_BE_HERE';
+// process.env.STRIPE_KEY = 'STIPE_API_KEY_NEEDS_TO_BE_HERE';
 
 let mongo: any;
 

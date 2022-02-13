@@ -67,12 +67,14 @@ it('returns a 400 when purchasing a cancelled order', async () => {
 //   const order = Order.build({
 //     id: new mongoose.Types.ObjectId().toHexString(),
 //     version: 0,
-//     userId: userId,
+//     userId,
 //     price: 20,
 //     status: OrderStatus.Created,
 //   });
 
 //   await order.save();
+
+//   console.log(order.id);
 
 //   await request(app)
 //     .post('/api/payments')
@@ -84,15 +86,13 @@ it('returns a 400 when purchasing a cancelled order', async () => {
 //     .expect(201);
 
 //   // Stripe mock
-// const chargeOptions = (stripe.charges.create as jest.Mock).mock.calls[0][0];
-// expect(chargeOptions.source).toEqual('tok_visa');
-// expect(chargeOptions.amount).toEqual(20 * 100);
-// expect(chargeOptions.currency).toEqual('usd');
+//   // const chargeOptions = (stripe.charges.create as jest.Mock).mock.calls[0][0];
+//   // expect(chargeOptions.source).toEqual('tok_visa');
+//   // expect(chargeOptions.amount).toEqual(20 * 100);
+//   // expect(chargeOptions.currency).toEqual('usd');
 // });
 
 it('returns 201 with valid inputs with real stripe API', async () => {
-  process.env.STRIPE_KEY =
-    'sk_test_51KRxt0B5OdVnxsHxxKpMyAqCT0l0bmUnWOcT4ywaTdPsa9okqtuMLfBIuz0fYQXXGhK18bX0wLRfbRQ22SquXtGL00tHH1srQ4';
   const userId = new mongoose.Types.ObjectId().toHexString();
   const price = Math.floor(Math.random() * 100000);
 
