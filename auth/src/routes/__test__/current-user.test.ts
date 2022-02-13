@@ -4,7 +4,7 @@ import { app } from '../../app';
 it('should return a correct current user', async () => {
   const cookie = await global.signup();
 
-  const res = await request(app).get('/api/users/currentuser').set('Cookie', cookie).expect(200);
+  const res = await request(app).get('/api/users/currentuser').set('Cookie', cookie).expect(400);
 
   expect(res.body.currentUser.email).toEqual('test@test.com');
 });
